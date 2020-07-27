@@ -1,22 +1,24 @@
 package de.streaming.service.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.List;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "serien")
 public class Serie {
 
     @Id
+    @GeneratedValue
     Integer serie_id;
 
     String name;
 
     String beschreibung;
 
-    @OneToMany
-    List<Staffel> staffelList;
+    // Zuletzt gesehene Folge
+    Integer zgFolge;
+
+    // Zuletzt gesehene Staffel
+    Integer zgStaffel;
+
+
 }
