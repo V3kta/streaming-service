@@ -1,14 +1,18 @@
 package de.streaming.service.Entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "serien")
+@Getter
+@Setter
 public class Serie {
 
     @Id
-    @GeneratedValue
-    Integer serie_id;
+    Integer id;
 
     String name;
 
@@ -19,6 +23,5 @@ public class Serie {
 
     // Zuletzt gesehene Staffel
     Integer zgStaffel;
-
 
 }

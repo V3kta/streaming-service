@@ -1,15 +1,18 @@
 package de.streaming.service.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "user")
+@Getter
+@Setter
 public class User {
     @Id
-    Integer user_id;
+    Integer id;
 
     String username;
 
