@@ -1,26 +1,26 @@
 package de.streaming.service.Entity;
 
 import lombok.Getter;
-import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "user")
 @Getter
-@Setter
-public class User {
+public class User implements Serializable {
     @Id
-    Integer id;
+    private Integer id;
 
-    String username;
+    private String username;
 
-    String password;
+    private String password;
 
-    @OneToMany
-    @JoinColumn(name = "user_id")
-    List<Serie> geseheneSerien;
-
+    @OneToMany(mappedBy = "user")
+    List<Serie> serien;
 
 }

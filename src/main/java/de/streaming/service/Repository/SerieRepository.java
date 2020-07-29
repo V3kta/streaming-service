@@ -8,4 +8,6 @@ import java.util.List;
 
 @Repository
 public interface SerieRepository extends JpaRepository<Serie, Integer> {
+    List<Serie> findByUserId(Integer id);
+
 }

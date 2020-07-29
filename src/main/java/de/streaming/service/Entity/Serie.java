@@ -1,27 +1,35 @@
 package de.streaming.service.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "serien")
 @Getter
-@Setter
-public class Serie {
+public class Serie implements Serializable {
 
     @Id
-    Integer id;
+    private Integer id;
 
-    String name;
+    private String name;
 
-    String beschreibung;
+    private String beschreibung;
 
     // Zuletzt gesehene Folge
-    Integer zgFolge;
+    private Integer zgFolge;
 
     // Zuletzt gesehene Staffel
-    Integer zgStaffel;
+    private Integer zgStaffel;
+
+    // Zuletzt gesehen am
+    private String zgDatum;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

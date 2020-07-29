@@ -2,24 +2,29 @@ package de.streaming.service.Controller;
 
 import de.streaming.service.Entity.Serie;
 import de.streaming.service.Repository.SerieRepository;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200/")
-@Controller
+@CrossOrigin(origins = "*")
+@RestController
+@Slf4j
 public class SerienController {
 
-    SerieRepository serieRepository;
+    private final SerieRepository repository;
 
-    @GetMapping(value = "/refresh/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Serie> refreshSerien(@PathVariable Integer userId) {
+    SerienController(SerieRepository serieRepository) {
+        repository = serieRepository;
+    }
 
-        return null;
+
+    @GetMapping(value = "/refresh/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Serie> refreshSerien(@PathVariable Integer id) {
+        return repository.findByUserId(id);
     }
 }
