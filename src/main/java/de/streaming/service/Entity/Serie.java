@@ -5,6 +5,8 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "serien")
@@ -27,9 +29,7 @@ public class Serie implements Serializable {
     // Zuletzt gesehen am
     private String zgDatum;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "serien")
+    List<User> users;
 
 }

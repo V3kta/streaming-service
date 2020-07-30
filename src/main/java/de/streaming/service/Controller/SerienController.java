@@ -1,30 +1,30 @@
 package de.streaming.service.Controller;
 
 import de.streaming.service.Entity.Serie;
+import de.streaming.service.Entity.User;
 import de.streaming.service.Repository.SerieRepository;
+import de.streaming.service.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "*")
 @RestController
 @Slf4j
 public class SerienController {
 
-    private final SerieRepository repository;
+    private final SerieRepository serieRepository;
 
     SerienController(SerieRepository serieRepository) {
-        repository = serieRepository;
+        this.serieRepository = serieRepository;
     }
 
-
-    @GetMapping(value = "/refresh/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Serie> refreshSerien(@PathVariable Integer id) {
-        return repository.findByUserId(id);
+    @PostMapping(value = "/serie/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Serie> refreshSerien(@RequestBody User user) {
+        return serieRepository.findByUsers(user);
     }
 }

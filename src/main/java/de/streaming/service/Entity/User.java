@@ -1,13 +1,12 @@
 package de.streaming.service.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -20,7 +19,12 @@ public class User implements Serializable {
 
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_serie_data",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "serie_id"))
     List<Serie> serien;
 
 }
