@@ -16,7 +16,4 @@ public interface UserSerieRepository extends JpaRepository<UserSerie, Integer> {
 
     List<UserSerie> findByUserId(Integer id);
 
-    void deleteByUser(User user);
-
-    void deleteBySerie(Serie serie);
 }

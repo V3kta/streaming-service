@@ -11,6 +11,14 @@ import javax.persistence.*;
 @Getter
 public class UserSerie {
 
+    public UserSerie() {}
+
+    public UserSerie(UserSerieKey id, User user, Serie serie) {
+        this.id = id;
+        this.user = user;
+        this.serie = serie;
+    }
+
     @EmbeddedId
     UserSerieKey id;
 
