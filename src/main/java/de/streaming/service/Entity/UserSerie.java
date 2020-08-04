@@ -1,11 +1,14 @@
 package de.streaming.service.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.streaming.service.Model.UserSerieKey;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_serie_data")
+@Getter
 public class UserSerie {
 
     @EmbeddedId

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -25,8 +26,13 @@ public class SerienController {
     }
 
     @PostMapping(value = "serie/user/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserSerie> refreshSerien(@RequestBody User user) {
-        return userSerieRepository.findByUserId(user.getId());
+    public List<Serie> refreshSerien(@RequestBody User user) {
+        List<Serie> serienList = new ArrayList<>();
+        List<UserSerie> userSerieList = userSerieRepository.findByUserId(user.getId());
+        for (UserSerie userSerie : userSerieList) {
+            serienList.add(userSerie.getSerie());
+        }
+        return serienList;
     }
 
     @PostMapping(value = "serie/user/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
