@@ -3,7 +3,10 @@ package de.streaming.service.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -17,14 +20,14 @@ public class User implements Serializable {
 
     private String username;
 
+    private String vorname;
+
+    private String nachname;
+
     private String password;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "user_serie_data",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "serie_id"))
-    List<Serie> serien;
+    @OneToMany(mappedBy = "user")
+    List<UserSerie> userSerien;
 
 }

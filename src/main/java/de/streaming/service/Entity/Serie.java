@@ -3,7 +3,10 @@ package de.streaming.service.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -20,16 +23,8 @@ public class Serie implements Serializable {
 
     private String beschreibung;
 
-    // Zuletzt gesehene Folge
-    private Integer zgFolge;
-
-    // Zuletzt gesehene Staffel
-    private Integer zgStaffel;
-
-    // Zuletzt gesehen am
-    private String zgDatum;
-
-    @ManyToMany(mappedBy = "serien")
-    List<User> users;
+    @JsonIgnore
+    @OneToMany(mappedBy = "serie")
+    List<UserSerie> userSerien;
 
 }
