@@ -9,7 +9,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "serien")
@@ -22,6 +21,8 @@ public class Serie implements Serializable {
     private String name;
 
     private String beschreibung;
+
+    private String bildPfad;
 
     @JsonIgnore
     @OneToMany(mappedBy = "serie")
