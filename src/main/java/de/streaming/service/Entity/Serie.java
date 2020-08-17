@@ -23,6 +23,8 @@ public class Serie implements Serializable {
 
     private String beschreibung;
 
+    private String bildPfad;
+
     @JsonIgnore
     @OneToMany(mappedBy = "serie")
     List<UserSerie> userSerien;

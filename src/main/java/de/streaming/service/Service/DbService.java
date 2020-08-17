@@ -3,6 +3,7 @@ package de.streaming.service.Service;
 import de.streaming.service.Entity.Serie;
 import de.streaming.service.Entity.User;
 import de.streaming.service.Entity.UserSerie;
+import de.streaming.service.Model.SerieDto;
 import de.streaming.service.Model.UserSerieKey;
 import de.streaming.service.Repository.SerieRepository;
 import de.streaming.service.Repository.UserRepository;
@@ -35,12 +36,13 @@ public class DbService {
 
     }
 
-    public List<Serie> refreshUserSerien(Integer userId) {
+    public List<SerieDto> refreshUserSerien(Integer userId) {
 
-        List<Serie> serienList = new ArrayList<>();
+        List<SerieDto> serienList = new ArrayList<>();
         List<UserSerie> userSerieList = userSerieRepository.findByUserId(userId);
         for (UserSerie userSerie : userSerieList) {
-            serienList.add(userSerie.getSerie());
+            SerieDto serie = new SerieDto(userSerie.getSerie().getId(),userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(),userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
+            serienList.add(serie);
         }
 
         log.info("Refreshed Userserien!");

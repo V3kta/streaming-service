@@ -3,6 +3,7 @@ package de.streaming.service.Controller;
 import de.streaming.service.Entity.Serie;
 import de.streaming.service.Entity.User;
 import de.streaming.service.Entity.UserSerie;
+import de.streaming.service.Model.SerieDto;
 import de.streaming.service.Model.UserSerieIds;
 import de.streaming.service.Service.DbService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class UserSerienController {
     }
 
     @GetMapping(value = "serie/user/refresh/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Serie> refreshUS(@PathVariable Integer userId) {
+    public List<SerieDto> refreshUS(@PathVariable Integer userId) {
         return dbService.refreshUserSerien(userId);
     }
 
