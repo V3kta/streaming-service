@@ -1,8 +1,6 @@
 package de.streaming.service.Controller;
 
-import de.streaming.service.Entity.Serie;
 import de.streaming.service.Entity.User;
-import de.streaming.service.Entity.UserSerie;
 import de.streaming.service.Model.SerieDto;
 import de.streaming.service.Model.UserSerieIds;
 import de.streaming.service.Service.DbService;
@@ -24,7 +22,7 @@ public class UserSerienController {
     }
 
     @GetMapping(value = "/serie/refresh/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Serie> refreshAS() {
+    public List<SerieDto> refreshAS() {
         return dbService.refreshSerien();
     }
 

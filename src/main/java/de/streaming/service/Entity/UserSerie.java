@@ -1,6 +1,5 @@
 package de.streaming.service.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.streaming.service.Model.UserSerieKey;
 import lombok.Getter;
 
@@ -11,12 +10,16 @@ import javax.persistence.*;
 @Getter
 public class UserSerie {
 
-    public UserSerie() {}
+    public UserSerie() {
+    }
 
-    public UserSerie(UserSerieKey id, User user, Serie serie) {
-        this.id = id;
+    public UserSerie(UserSerieKey userSerieKey, User user, Serie serie) {
+        id = userSerieKey;
         this.user = user;
         this.serie = serie;
+        zgDatum = null;
+        zgFolge = 0;
+        zgStaffel = 0;
     }
 
     @EmbeddedId
@@ -32,14 +35,13 @@ public class UserSerie {
     @JoinColumn(name = "serie_id")
     Serie serie;
 
+    // Zuletzt gesehen am
+    private String zgDatum;
+
     // Zuletzt gesehene Folge
     private Integer zgFolge;
 
     // Zuletzt gesehene Staffel
     private Integer zgStaffel;
-
-    // Zuletzt gesehen am
-    private String zgDatum;
-
 
 }
