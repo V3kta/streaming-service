@@ -3,6 +3,7 @@ package de.streaming.service.Service;
 import de.streaming.service.Entity.Serie;
 import de.streaming.service.Entity.User;
 import de.streaming.service.Entity.UserSerie;
+import de.streaming.service.Model.SerieDto;
 import de.streaming.service.Model.UserDto;
 import de.streaming.service.Model.UserSerieKey;
 import de.streaming.service.Repository.SerieRepository;
@@ -16,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import javax.transaction.Transactional;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,19 +44,26 @@ public class DbService {
         this.serieRepository = serieRepository;
     }
 
-    public List<Serie> refreshSerien() {
-
+    public List<SerieDto> refreshSerien() {
+        List<Serie> serienDb = serieRepository.findAll();
+        List<SerieDto> serienList = new ArrayList<>();
+        for (Serie serie : serienDb) {
+            SerieDto serieDto = new SerieDto(serie.getId(), serie.getName(), serie.getBeschreibung(), serie.getBildPfad(), null, 0, 0);
+            serienList.add(serieDto);
+        }
         log.info("Refreshed Serien!");
-        return serieRepository.findAll();
+        return serienList;
 
     }
 
-    public List<Serie> refreshUserSerien(Integer userId) {
+    public List<SerieDto> refreshUserSerien(Integer userId) {
 
-        List<Serie> serienList = new ArrayList<>();
+        List<SerieDto> serienList = new ArrayList<>();
         List<UserSerie> userSerieList = userSerieRepository.findByUserId(userId);
+
         for (UserSerie userSerie : userSerieList) {
-            serienList.add(userSerie.getSerie());
+            SerieDto serie = new SerieDto(userSerie.getSerie().getId(),userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(),userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
+            serienList.add(serie);
         }
 
         log.info("Refreshed Userserien for User ID: " + userId );
@@ -85,14 +93,13 @@ public class DbService {
         }
     }
 
+    @Transactional
     public void deleteUserSerie(Integer userId, Integer serieId) {
         Optional<Serie> serie = serieRepository.findById(serieId);
         Optional<User> user = userRepository.findById(userId);
 
         if (serie.isPresent() && user.isPresent()) {
-            UserSerieKey userSerieKey = new UserSerieKey(userId, serieId);
-            UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get());
-            userSerieRepository.delete(userSerie);
+            userSerieRepository.removeBySerieAndUser(serie.get(), user.get());
             log.info("Deleted Userserie " + userSerie.getSerie().getName() + " from " + userSerie.getUser().getUsername());
         }
     }

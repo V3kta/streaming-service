@@ -1,7 +1,7 @@
 package de.streaming.service.Controller;
 
-import de.streaming.service.Entity.Serie;
 import de.streaming.service.Entity.User;
+import de.streaming.service.Model.SerieDto;
 import de.streaming.service.Model.UserSerieIds;
 import de.streaming.service.Service.DbService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class UserSerienController {
     }
 
     @GetMapping(value = "/serie/refresh/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Serie>> refreshAS(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<SerieDto>> refreshAS(@RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             return new ResponseEntity<>(dbService.refreshSerien(), HttpStatus.ACCEPTED);
         }
