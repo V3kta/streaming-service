@@ -81,13 +81,13 @@ public class DbService {
         return userList;
     }
 
-    public void saveUserSerie(Integer userId, Integer serieId) {
-        Optional<Serie> serie = serieRepository.findById(serieId);
+    public void saveUserSerie(Integer userId, SerieDto serieDto) {
         Optional<User> user = userRepository.findById(userId);
 
-        if (serie.isPresent() && user.isPresent()) {
-            UserSerieKey userSerieKey = new UserSerieKey(userId, serieId);
-            UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get());
+        if (user.isPresent()) {
+            Serie serie = new Serie(serieDto.getId(), serieDto.getName(), serieDto.getBeschreibung(), serieDto.getBildPfad());
+            UserSerieKey userSerieKey = new UserSerieKey(userId, serieDto.getId());
+            UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie, serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
             userSerieRepository.save(userSerie);
             log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
         }
@@ -100,7 +100,7 @@ public class DbService {
 
         if (serie.isPresent() && user.isPresent()) {
             userSerieRepository.removeBySerieAndUser(serie.get(), user.get());
-            log.info("Deleted Userserie " + userSerie.getSerie().getName() + " from " + userSerie.getUser().getUsername());
+            log.info("Deleted Userserie " + serie.get().getName() + " from User ID: " + user.get().getId());
         }
     }
 
