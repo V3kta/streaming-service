@@ -8,6 +8,7 @@ import de.streaming.service.Model.UserSerieKey;
 import de.streaming.service.Repository.SerieRepository;
 import de.streaming.service.Repository.UserRepository;
 import de.streaming.service.Repository.UserSerieRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -57,7 +58,7 @@ public class DbService {
             serienList.add(userSerie.getSerie());
         }
 
-        log.info("Refreshed Userserien!");
+        log.info("Refreshed Userserien for User ID: " + userId );
         return serienList;
     }
 
@@ -68,7 +69,7 @@ public class DbService {
             userList.add(userSerie.getUser());
         }
 
-        log.info("Refreshed same Viewers!");
+        log.info("Refreshed same Viewers for Serien ID: " + serieId);
         return userList;
     }
 
@@ -80,7 +81,7 @@ public class DbService {
             UserSerieKey userSerieKey = new UserSerieKey(userId, serieId);
             UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get());
             userSerieRepository.save(userSerie);
-            log.info("Saved Userserie!");
+            log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
         }
     }
 
@@ -92,24 +93,29 @@ public class DbService {
             UserSerieKey userSerieKey = new UserSerieKey(userId, serieId);
             UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get());
             userSerieRepository.delete(userSerie);
-            log.info("Deleted Userserie!");
+            log.info("Deleted Userserie " + userSerie.getSerie().getName() + " from " + userSerie.getUser().getUsername());
         }
     }
 
     public UserDto validateLogin(String username, String password) {
         User user = userRepository.findByUsernameAndPassword(username, password);
         if (user != null) {
-
             String jws = Jwts.builder().setSubject(user.getUsername()).setExpiration(new Date(System.currentTimeMillis() + 600000)).signWith(signKey).compact();
-            return new UserDto(user.getUsername(), user.getVorname(), user.getNachname(), user.getPassword(), jws);
+            currentToken = jws;
+            return new UserDto(user.getId(), user.getUsername(), user.getVorname(), user.getNachname(), user.getPassword(), jws);
         }
 
         return null;
     }
 
-    public boolean validateToken(String token, String username) {
-        User user = userRepository.findByUsername(username);
-        assert Jwts.parserBuilder().setSigningKey(signKey).build().parseClaimsJws(token).getBody().getSubject().equals("Joe");
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(signKey).build().parseClaimsJws(token);
+        } catch (Exception e) {
+            log.warn("Token ungültig - " + e);
+            return false;
+        }
+        return true;
     }
 }
 

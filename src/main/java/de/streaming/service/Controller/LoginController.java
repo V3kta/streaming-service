@@ -39,7 +39,6 @@ public class LoginController {
 
     @PostMapping(value = "/user/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDto login(@RequestBody LoginInfo loginInfo) {
-
-    return dbService.
+        return dbService.validateLogin(loginInfo.getUsername(), loginInfo.getPassword());
     }
 }
