@@ -2,10 +2,7 @@ package de.streaming.service.Controller;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import de.streaming.service.Entity.User;
-import de.streaming.service.Model.LoginInfo;
-import de.streaming.service.Model.UserDto;
-import de.streaming.service.Model.UserSerieIds;
-import de.streaming.service.Model.UserToken;
+import de.streaming.service.Model.*;
 import de.streaming.service.Repository.UserRepository;
 import de.streaming.service.Service.DbService;
 import io.jsonwebtoken.JwtBuilder;
@@ -40,5 +37,15 @@ public class LoginController {
     @PostMapping(value = "/user/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDto login(@RequestBody LoginInfo loginInfo) {
         return dbService.validateLogin(loginInfo.getUsername(), loginInfo.getPassword());
+    }
+
+    @PostMapping(value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus register(@RequestBody UserRegisterDto userRegisterDto) {
+        if (!userRepository.existsByUsername(userRegisterDto.getUsername())) {
+            User user = new User(userRegisterDto.getUsername(), userRegisterDto.getVorname(), userRegisterDto.getNachname(), userRegisterDto.getPassword());
+            userRepository.save(user);
+            return HttpStatus.ACCEPTED;
+        }
+        return HttpStatus.FORBIDDEN;
     }
 }
