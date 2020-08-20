@@ -2,6 +2,7 @@ package de.streaming.service.Controller;
 
 import de.streaming.service.Entity.User;
 import de.streaming.service.Model.SerieDto;
+import de.streaming.service.Model.UserSerieDto;
 import de.streaming.service.Model.UserSerieIds;
 import de.streaming.service.Service.DbService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class UserSerienController {
     }
 
     @GetMapping(value = "serie/user/refresh/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Serie>> refreshUS(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<SerieDto>> refreshUS(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             return new ResponseEntity<>(dbService.refreshUserSerien(userId), HttpStatus.ACCEPTED);
         }
@@ -51,9 +52,9 @@ public class UserSerienController {
     }
 
     @PostMapping(value = "serie/user/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus saveUS(@RequestBody UserSerieIds userSerieIds, @RequestHeader("Authorization") String token) {
+    public HttpStatus saveUS(@RequestBody UserSerieDto userSerieDto, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            dbService.saveUserSerie(userSerieIds.getUserId(), userSerieIds.getSerieId());
+            dbService.saveUserSerie(userSerieDto.getUserDto(), userSerieDto.getSerieDto());
             return HttpStatus.ACCEPTED;
         }
         log.warn("Token ungültig - " + token);

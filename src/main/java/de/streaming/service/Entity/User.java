@@ -15,6 +15,16 @@ import java.util.Set;
 @Table(name = "user")
 @Getter
 public class User implements Serializable {
+
+    public User () {}
+
+    public User (Integer id, String username, String vorname, String nachname, String password) {
+        this.id = id;
+        this.username = username;
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.password = password;
+    }
     @Id
     private Integer id;
 

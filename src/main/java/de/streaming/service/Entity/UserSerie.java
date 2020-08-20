@@ -22,6 +22,15 @@ public class UserSerie {
         zgStaffel = 0;
     }
 
+    public UserSerie(UserSerieKey userSerieKey, User user, Serie serie, String datum, Integer folge, Integer staffel) {
+        id = userSerieKey;
+        this.user = user;
+        this.serie = serie;
+        zgDatum = datum;
+        zgFolge = folge;
+        zgStaffel = staffel;
+    }
+
     @EmbeddedId
     UserSerieKey id;
 
