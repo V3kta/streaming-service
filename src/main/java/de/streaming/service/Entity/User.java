@@ -3,10 +3,7 @@ package de.streaming.service.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +22,16 @@ public class User implements Serializable {
         this.nachname = nachname;
         this.password = password;
     }
+
+    public User (String username, String vorname, String nachname, String password) {
+        this.username = username;
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.password = password;
+    }
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String username;
