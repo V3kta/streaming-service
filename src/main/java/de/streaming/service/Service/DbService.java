@@ -81,16 +81,15 @@ public class DbService {
         return userList;
     }
 
-    public void saveUserSerie(Integer userId, SerieDto serieDto) {
-        Optional<User> user = userRepository.findById(userId);
+    public void saveUserSerie(UserDto userDto, SerieDto serieDto) {
 
-        if (user.isPresent()) {
             Serie serie = new Serie(serieDto.getId(), serieDto.getName(), serieDto.getBeschreibung(), serieDto.getBildPfad());
-            UserSerieKey userSerieKey = new UserSerieKey(userId, serieDto.getId());
-            UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie, serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
+            User user = new User(userDto.getId(), userDto.getUsername(), userDto.getVorname(), userDto.getNachname(), userDto.getPassword());
+            UserSerieKey userSerieKey = new UserSerieKey(userDto.getId(), serieDto.getId());
+            UserSerie userSerie = new UserSerie(userSerieKey, user, serie, serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
             userSerieRepository.save(userSerie);
             log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
-        }
+
     }
 
     @Transactional

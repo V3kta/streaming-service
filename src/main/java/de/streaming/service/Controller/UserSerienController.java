@@ -52,9 +52,9 @@ public class UserSerienController {
     }
 
     @PostMapping(value = "serie/user/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus saveUS(@RequestBody UserSerieDto userSerie, @RequestBody @RequestHeader("Authorization") String token) {
+    public HttpStatus saveUS(@RequestBody UserSerieDto userSerieDto, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            dbService.saveUserSerie(userSerie.getUserId(), userSerie.getSerie());
+            dbService.saveUserSerie(userSerieDto.getUserDto(), userSerieDto.getSerieDto());
             return HttpStatus.ACCEPTED;
         }
         log.warn("Token ungültig - " + token);

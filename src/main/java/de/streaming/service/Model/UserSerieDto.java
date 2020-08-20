@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 public class UserSerieDto {
 
-    private Integer userId;
-    private SerieDto serie;
+    private UserDto userDto;
+    private SerieDto serieDto;
 
 
 }
