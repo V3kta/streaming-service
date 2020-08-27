@@ -1,0 +1,71 @@
+- changeSet:
+    id: userTable
+    author: Author
+    changes:
+      - createTable:
+          tableName: user
+          columns:
+            - column:
+                name: id
+                type: int
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: vorname
+                type: varchar(255)
+            - column:
+                name: nachname
+                type: varchar(255)
+            - column:
+                name: username
+                type: varchar(255)
+            - column:
+                name: password
+                type: varchar(255)
+      - createTable:
+          tableName: serien
+          columns:
+            - column:
+                name: id
+                type: int
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: name
+                type: varchar(255)
+            - column:
+                name: beschreibung
+                type: longtext
+            - column:
+                name: bild_pfad
+                type: varchar(255)
+      - createTable:
+          tableName: user_serien_data
+          columns:
+            - column:
+                name: user_id
+                type: int
+                constraints:
+                  primaryKey: true
+                  nullable: false
+                  foreignKeyName: fk_user_id
+                  references: user(id)
+            - column:
+                name: serie_id
+                type: int
+                constraints:
+                  nullable: false
+                  foreignKeyName: fk_serie_id
+                  references: serien(id)
+            - column:
+                name: zg_datum
+                type: varchar(255)
+            - column:
+                name: zg_folge
+                type: varchar(255)
+            - column:
+                name: zg_staffel
+                type: varchar(255)
