@@ -46,4 +46,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     List<UserSerie> userSerien;
 
+    @OneToOne(mappedBy = "user")
+    Settings settings;
+
 }

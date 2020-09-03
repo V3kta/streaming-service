@@ -1,12 +1,15 @@
 package de.streaming.service.Service;
 
 import de.streaming.service.Entity.Serie;
+import de.streaming.service.Entity.Settings;
 import de.streaming.service.Entity.User;
 import de.streaming.service.Entity.UserSerie;
 import de.streaming.service.Model.SerieDto;
+import de.streaming.service.Model.SettingsDto;
 import de.streaming.service.Model.UserDto;
 import de.streaming.service.Model.UserSerieKey;
 import de.streaming.service.Repository.SerieRepository;
+import de.streaming.service.Repository.SettingsRepository;
 import de.streaming.service.Repository.UserRepository;
 import de.streaming.service.Repository.UserSerieRepository;
 import io.jsonwebtoken.Claims;
@@ -17,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.security.Key;
 import java.util.ArrayList;
@@ -33,15 +37,17 @@ public class DbService {
     private final UserSerieRepository userSerieRepository;
     private final UserRepository userRepository;
     private final SerieRepository serieRepository;
+    private final SettingsRepository settingsRepository;
 
     private final Key signKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private String currentToken;
 
 
-    DbService(UserSerieRepository userSerieRepository, UserRepository userRepository, SerieRepository serieRepository) {
+    DbService(UserSerieRepository userSerieRepository, UserRepository userRepository, SerieRepository serieRepository, SettingsRepository settingsRepository) {
         this.userSerieRepository = userSerieRepository;
         this.userRepository = userRepository;
         this.serieRepository = serieRepository;
+        this.settingsRepository = settingsRepository;
     }
 
     public List<SerieDto> refreshSerien() {
@@ -62,11 +68,11 @@ public class DbService {
         List<UserSerie> userSerieList = userSerieRepository.findByUserId(userId);
 
         for (UserSerie userSerie : userSerieList) {
-            SerieDto serie = new SerieDto(userSerie.getSerie().getId(),userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(),userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
+            SerieDto serie = new SerieDto(userSerie.getSerie().getId(), userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(), userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
             serienList.add(serie);
         }
 
-        log.info("Refreshed Userserien for User ID: " + userId );
+        log.info("Refreshed Userserien for User ID: " + userId);
         return serienList;
     }
 
@@ -83,12 +89,12 @@ public class DbService {
 
     public void saveUserSerie(UserDto userDto, SerieDto serieDto) {
 
-            Serie serie = new Serie(serieDto.getId(), serieDto.getName(), serieDto.getBeschreibung(), serieDto.getBildPfad());
-            User user = new User(userDto.getId(), userDto.getUsername(), userDto.getVorname(), userDto.getNachname(), userDto.getPassword());
-            UserSerieKey userSerieKey = new UserSerieKey(userDto.getId(), serieDto.getId());
-            UserSerie userSerie = new UserSerie(userSerieKey, user, serie, serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
-            userSerieRepository.save(userSerie);
-            log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
+        Serie serie = new Serie(serieDto.getId(), serieDto.getName(), serieDto.getBeschreibung(), serieDto.getBildPfad());
+        User user = new User(userDto.getId(), userDto.getUsername(), userDto.getVorname(), userDto.getNachname(), userDto.getPassword());
+        UserSerieKey userSerieKey = new UserSerieKey(userDto.getId(), serieDto.getId());
+        UserSerie userSerie = new UserSerie(userSerieKey, user, serie, serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
+        userSerieRepository.save(userSerie);
+        log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
 
     }
 
@@ -122,6 +128,22 @@ public class DbService {
             return false;
         }
         return true;
+    }
+
+    public SettingsDto refreshSettings(Integer userId) {
+        Settings settings = settingsRepository.findByUser_Id(userId);
+
+        return new SettingsDto(settings.getCardViewMode(), settings.getTheme());
+
+    }
+
+    public void saveSettings(Integer userId, SettingsDto settingsDto) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isPresent()) {
+            log.info("Settings saved!");
+            settingsRepository.save(new Settings(user.get(), settingsDto.getCardViewMode(), settingsDto.getTheme()));
+        }
     }
 }
 

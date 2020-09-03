@@ -80,3 +80,30 @@ databaseChangeLog:
               - column:
                   name: zg_staffel
                   type: int
+
+  - changeSet:
+      id: settings_table_creation
+      author: lrasche
+      changes:
+        - createTable:
+            tableName: settings
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_settings_id
+                    references: user(id)
+              - column:
+                  name: card_view_mode
+                  type: varchar(255)
+              - column:
+                  name: theme
+                  type: varchar(255)
