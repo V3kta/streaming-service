@@ -15,10 +15,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: vorname
-                  type: varchar(255)
-              - column:
-                  name: nachname
+                  name: email
                   type: varchar(255)
               - column:
                   name: username
@@ -26,6 +23,13 @@ databaseChangeLog:
               - column:
                   name: password
                   type: varchar(255)
+              - column:
+                  name: vorname
+                  type: varchar(255)
+              - column:
+                  name: nachname
+                  type: varchar(255)
+
 
   - changeSet:
       id: serien_table_creation
