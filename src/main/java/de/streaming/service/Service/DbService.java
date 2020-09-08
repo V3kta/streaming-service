@@ -131,9 +131,13 @@ public class DbService {
     }
 
     public SettingsDto refreshSettings(Integer userId) {
-        Settings settings = settingsRepository.findByUser_Id(userId);
 
-        return new SettingsDto(settings.getCardViewMode(), settings.getTheme());
+        if (settingsRepository.existsByUser_Id(userId)) {
+            Settings settings = settingsRepository.findByUser_Id(userId);
+            return new SettingsDto(settings.getCardViewMode(), settings.getTheme());
+        }
+
+        return new SettingsDto("LIST", "default");
 
     }
 
