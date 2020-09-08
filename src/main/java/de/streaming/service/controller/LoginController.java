@@ -1,26 +1,15 @@
-package de.streaming.service.Controller;
+package de.streaming.service.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import de.streaming.service.Entity.User;
-import de.streaming.service.Model.*;
-import de.streaming.service.Repository.UserRepository;
-import de.streaming.service.Service.DbService;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import de.streaming.service.dto.UserDto;
+import de.streaming.service.dto.UserRegisterDto;
+import de.streaming.service.entity.User;
+import de.streaming.service.model.*;
+import de.streaming.service.repository.UserRepository;
+import de.streaming.service.service.DbService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.security.Key;
-import java.util.Date;
-
-import static javax.crypto.Cipher.SECRET_KEY;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")

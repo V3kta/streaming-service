@@ -1,18 +1,18 @@
-package de.streaming.service.Service;
+package de.streaming.service.service;
 
-import de.streaming.service.Entity.Serie;
-import de.streaming.service.Entity.Settings;
-import de.streaming.service.Entity.User;
-import de.streaming.service.Entity.UserSerie;
-import de.streaming.service.Model.SerieDto;
-import de.streaming.service.Model.SettingsDto;
-import de.streaming.service.Model.UserDto;
-import de.streaming.service.Model.UserSerieKey;
-import de.streaming.service.Repository.SerieRepository;
-import de.streaming.service.Repository.SettingsRepository;
-import de.streaming.service.Repository.UserRepository;
-import de.streaming.service.Repository.UserSerieRepository;
-import io.jsonwebtoken.Claims;
+import de.streaming.service.entity.Serie;
+import de.streaming.service.entity.Settings;
+import de.streaming.service.entity.User;
+import de.streaming.service.entity.UserSerie;
+import de.streaming.service.dto.SerieDto;
+import de.streaming.service.dto.SettingsDto;
+import de.streaming.service.dto.UserDto;
+import de.streaming.service.model.PasswordChange;
+import de.streaming.service.model.UserSerieKey;
+import de.streaming.service.repository.SerieRepository;
+import de.streaming.service.repository.SettingsRepository;
+import de.streaming.service.repository.UserRepository;
+import de.streaming.service.repository.UserSerieRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -161,6 +161,17 @@ public class DbService {
             log.info("Settings saved!");
             settingsRepository.save(new Settings(user.get(), settingsDto.getCardViewMode(), settingsDto.getTheme()));
         }
+    }
+
+    public boolean changePassword(PasswordChange passwordChange) {
+        if (userRepository.existsByIdAndPassword(passwordChange.getId(), passwordChange.getOldPassword())) {
+            User user = userRepository.findByIdAndPassword(passwordChange.getId(), passwordChange.getOldPassword());
+            user.setPassword(passwordChange.getNewPassword());
+            userRepository.save(user);
+            return true;
+        }
+
+        return false;
     }
 }
 

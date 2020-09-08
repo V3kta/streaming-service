@@ -1,6 +1,5 @@
-package de.streaming.service.Model;
+package de.streaming.service.dto;
 
-import de.streaming.service.Entity.Serie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

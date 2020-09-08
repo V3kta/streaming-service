@@ -1,10 +1,10 @@
-package de.streaming.service.Controller;
+package de.streaming.service.controller;
 
-import de.streaming.service.Entity.User;
-import de.streaming.service.Model.SerieDto;
-import de.streaming.service.Model.UserSerieDto;
-import de.streaming.service.Model.UserSerieIds;
-import de.streaming.service.Service.DbService;
+import de.streaming.service.entity.User;
+import de.streaming.service.dto.SerieDto;
+import de.streaming.service.dto.UserSerieDto;
+import de.streaming.service.model.UserSerieIds;
+import de.streaming.service.service.DbService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

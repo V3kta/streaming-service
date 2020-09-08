@@ -1,8 +1,8 @@
-package de.streaming.service.Repository;
+package de.streaming.service.repository;
 
-import de.streaming.service.Entity.Serie;
-import de.streaming.service.Entity.User;
-import de.streaming.service.Entity.UserSerie;
+import de.streaming.service.entity.Serie;
+import de.streaming.service.entity.User;
+import de.streaming.service.entity.UserSerie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
-package de.streaming.service.Model;
+package de.streaming.service.model;
 
-import de.streaming.service.Entity.User;
+import de.streaming.service.entity.User;
 import lombok.Getter;
 
 @Getter

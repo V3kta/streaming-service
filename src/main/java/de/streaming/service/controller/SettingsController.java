@@ -1,8 +1,8 @@
-package de.streaming.service.Controller;
+package de.streaming.service.controller;
 
-import de.streaming.service.Entity.Settings;
-import de.streaming.service.Model.SettingsDto;
-import de.streaming.service.Service.DbService;
+import de.streaming.service.dto.SettingsDto;
+import de.streaming.service.model.PasswordChange;
+import de.streaming.service.service.DbService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,17 @@ public class SettingsController {
         if (dbService.validateToken(token)) {
             dbService.saveSettings(userId, settingsDto);
             return HttpStatus.ACCEPTED;
+        }
+        return HttpStatus.UNAUTHORIZED;
+    }
+
+    @PostMapping(value = "/user/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus changePw(@RequestBody PasswordChange passwordChange, @RequestHeader("Authorization") String token) {
+        if (dbService.validateToken(token)) {
+            if (dbService.changePassword(passwordChange)) {
+                return HttpStatus.ACCEPTED;
+            };
+            return HttpStatus.NOT_ACCEPTABLE;
         }
         return HttpStatus.UNAUTHORIZED;
     }

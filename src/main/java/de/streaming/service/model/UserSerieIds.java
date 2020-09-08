@@ -1,4 +1,4 @@
-package de.streaming.service.Model;
+package de.streaming.service.model;
 
 import lombok.Getter;
 
