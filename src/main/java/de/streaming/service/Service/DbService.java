@@ -116,7 +116,14 @@ public class DbService {
     }
 
     public UserDto validateLogin(String login, String password) {
-        User user = userRepository.findByUsernameOrEmailAndPassword(login, login, password);
+        User user;
+
+        if (login.contains("@")) {
+            user = userRepository.findByEmailAndPassword(login, password);
+        } else {
+            user = userRepository.findByUsernameAndPassword(login, password);
+        }
+
         if (user != null) {
             String jws = Jwts.builder().setSubject(user.getUsername()).setExpiration(new Date(System.currentTimeMillis() + 600000)).signWith(signKey).compact();
             currentToken = jws;
