@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class SerieDto {
-    int id;
+    Integer id;
 
     String name;
 
@@ -18,7 +18,7 @@ public class SerieDto {
 
     String zgDatum;
 
-    int zgFolge;
+    Integer zgFolge;
 
-    int zgStaffel;
+    Integer zgStaffel;
 }

@@ -89,12 +89,18 @@ public class DbService {
 
     public void saveUserSerie(UserDto userDto, SerieDto serieDto) {
 
-        Serie serie = new Serie(serieDto.getId(), serieDto.getName(), serieDto.getBeschreibung(), serieDto.getBildPfad());
-        User user = new User(userDto.getId(), userDto.getUsername(), userDto.getVorname(), userDto.getNachname(), userDto.getPassword());
+        Optional<User> user = userRepository.findById(userDto.getId());
+        Optional<Serie> serie = serieRepository.findById(serieDto.getId());
         UserSerieKey userSerieKey = new UserSerieKey(userDto.getId(), serieDto.getId());
-        UserSerie userSerie = new UserSerie(userSerieKey, user, serie, serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
-        userSerieRepository.save(userSerie);
-        log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
+
+        if (user.isPresent() && serie.isPresent()) {
+            UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get(), serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
+            userSerieRepository.save(userSerie);
+            log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
+            return;
+        }
+
+        log.error("User oder Serie nicht vorhanden!");
 
     }
 

@@ -15,15 +15,8 @@ public class User implements Serializable {
 
     public User () {}
 
-    public User (Integer id, String username, String vorname, String nachname, String password) {
-        this.id = id;
-        this.username = username;
-        this.vorname = vorname;
-        this.nachname = nachname;
-        this.password = password;
-    }
-
-    public User (String username, String vorname, String nachname, String password) {
+    public User (String email, String username, String vorname, String nachname, String password) {
+        this.email = email;
         this.username = username;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -33,6 +26,8 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private String email;
 
     private String username;
 

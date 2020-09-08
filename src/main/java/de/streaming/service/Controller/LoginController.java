@@ -42,7 +42,7 @@ public class LoginController {
     @PostMapping(value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus register(@RequestBody UserRegisterDto userRegisterDto) {
         if (!userRepository.existsByUsername(userRegisterDto.getUsername())) {
-            User user = new User(userRegisterDto.getUsername(), userRegisterDto.getVorname(), userRegisterDto.getNachname(), userRegisterDto.getPassword());
+            User user = new User(userRegisterDto.getEmail(),userRegisterDto.getUsername(), userRegisterDto.getVorname(), userRegisterDto.getNachname(), userRegisterDto.getPassword());
             userRepository.save(user);
             return HttpStatus.ACCEPTED;
         }
