@@ -1,7 +1,6 @@
 package de.streaming.service.controller;
 
-import de.streaming.service.dto.SettingsDto;
-import de.streaming.service.model.PasswordChange;
+import de.streaming.service.dto.DTO;
 import de.streaming.service.service.DbService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,30 +18,50 @@ public class SettingsController {
     }
 
     @GetMapping(value = "/user/settings/refresh/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SettingsDto> refreshS(@PathVariable Integer userId, @RequestHeader("Authorization") String token ) {
+    public ResponseEntity<DTO.SettingsDTO> refreshS(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             return new ResponseEntity<>(dbService.refreshSettings(userId), HttpStatus.ACCEPTED);
         }
-
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-
     }
 
     @PostMapping(value = "/user/settings/save/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus saveS(@RequestBody SettingsDto settingsDto, @PathVariable Integer userId, @RequestHeader("Authorization") String token) {
+    public HttpStatus saveS(@RequestBody DTO.SettingsDTO settingsDTO, @PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            dbService.saveSettings(userId, settingsDto);
+            dbService.saveSettings(userId, settingsDTO);
             return HttpStatus.ACCEPTED;
         }
         return HttpStatus.UNAUTHORIZED;
     }
 
     @PostMapping(value = "/user/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus changePw(@RequestBody PasswordChange passwordChange, @RequestHeader("Authorization") String token) {
+    public HttpStatus changePassword(@RequestBody DTO.PasswordInfoDTO passwordInfoDTO, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            if (dbService.changePassword(passwordChange)) {
+            if (dbService.changeUserDetail(passwordInfoDTO)) {
                 return HttpStatus.ACCEPTED;
-            };
+            }
+            return HttpStatus.NOT_ACCEPTABLE;
+        }
+        return HttpStatus.UNAUTHORIZED;
+    }
+
+    @PostMapping(value = "/user/changeUsername", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus changeUsername(@RequestBody DTO.UsernameInfoDTO usernameInfoDTO, @RequestHeader("Authorization") String token) {
+        if (dbService.validateToken(token)) {
+            if (dbService.changeUserDetail(usernameInfoDTO)) {
+                return HttpStatus.ACCEPTED;
+            }
+            return HttpStatus.NOT_ACCEPTABLE;
+        }
+        return HttpStatus.UNAUTHORIZED;
+    }
+
+    @PostMapping(value = "/user/changeEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus changeEmail(@RequestBody DTO.EmailInfoDTO emailInfoDTO, @RequestHeader("Authorization") String token) {
+        if (dbService.validateToken(token)) {
+            if (dbService.changeUserDetail(emailInfoDTO)) {
+                return HttpStatus.ACCEPTED;
+            }
             return HttpStatus.NOT_ACCEPTABLE;
         }
         return HttpStatus.UNAUTHORIZED;

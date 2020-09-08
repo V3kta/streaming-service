@@ -1,13 +1,10 @@
 package de.streaming.service.service;
 
+import de.streaming.service.dto.DTO;
 import de.streaming.service.entity.Serie;
 import de.streaming.service.entity.Settings;
 import de.streaming.service.entity.User;
 import de.streaming.service.entity.UserSerie;
-import de.streaming.service.dto.SerieDto;
-import de.streaming.service.dto.SettingsDto;
-import de.streaming.service.dto.UserDto;
-import de.streaming.service.model.PasswordChange;
 import de.streaming.service.model.UserSerieKey;
 import de.streaming.service.repository.SerieRepository;
 import de.streaming.service.repository.SettingsRepository;
@@ -50,11 +47,11 @@ public class DbService {
         this.settingsRepository = settingsRepository;
     }
 
-    public List<SerieDto> refreshSerien() {
+    public List<DTO.SerieDTO> refreshSerien() {
         List<Serie> serienDb = serieRepository.findAll();
-        List<SerieDto> serienList = new ArrayList<>();
+        List<DTO.SerieDTO> serienList = new ArrayList<>();
         for (Serie serie : serienDb) {
-            SerieDto serieDto = new SerieDto(serie.getId(), serie.getName(), serie.getBeschreibung(), serie.getBildPfad(), null, 0, 0);
+            DTO.SerieDTO serieDto = new DTO.SerieDTO(serie.getId(), serie.getName(), serie.getBeschreibung(), serie.getBildPfad(), null, 0, 0);
             serienList.add(serieDto);
         }
         log.info("Refreshed Serien!");
@@ -62,13 +59,13 @@ public class DbService {
 
     }
 
-    public List<SerieDto> refreshUserSerien(Integer userId) {
+    public List<DTO.SerieDTO> refreshUserSerien(Integer userId) {
 
-        List<SerieDto> serienList = new ArrayList<>();
+        List<DTO.SerieDTO> serienList = new ArrayList<>();
         List<UserSerie> userSerieList = userSerieRepository.findByUserId(userId);
 
         for (UserSerie userSerie : userSerieList) {
-            SerieDto serie = new SerieDto(userSerie.getSerie().getId(), userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(), userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
+            DTO.SerieDTO serie = new DTO.SerieDTO(userSerie.getSerie().getId(), userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(), userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
             serienList.add(serie);
         }
 
@@ -87,14 +84,17 @@ public class DbService {
         return userList;
     }
 
-    public void saveUserSerie(UserDto userDto, SerieDto serieDto) {
+    public void saveUserSerie(DTO.UserSerieDTO userSerieDTO) {
 
-        Optional<User> user = userRepository.findById(userDto.getId());
-        Optional<Serie> serie = serieRepository.findById(serieDto.getId());
-        UserSerieKey userSerieKey = new UserSerieKey(userDto.getId(), serieDto.getId());
+        Optional<User> user = userRepository.findById(userSerieDTO.getUserDTO().getId());
+        Optional<Serie> serie = serieRepository.findById(userSerieDTO.getSerieDTO().getId());
+        UserSerieKey userSerieKey = new UserSerieKey(userSerieDTO.getUserDTO().getId(), userSerieDTO.getSerieDTO().getId());
 
         if (user.isPresent() && serie.isPresent()) {
-            UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get(), serieDto.getZgDatum(), serieDto.getZgFolge(), serieDto.getZgStaffel());
+            UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get(),
+                    userSerieDTO.getSerieDTO().getZgDatum(),
+                    userSerieDTO.getSerieDTO().getZgFolge(),
+                    userSerieDTO.getSerieDTO().getZgStaffel());
             userSerieRepository.save(userSerie);
             log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
             return;
@@ -115,7 +115,7 @@ public class DbService {
         }
     }
 
-    public UserDto validateLogin(String login, String password) {
+    public DTO.UserDTO validateLogin(String login, String password) {
         User user;
 
         if (login.contains("@")) {
@@ -125,15 +125,15 @@ public class DbService {
         }
 
         if (user != null) {
-            String jws = Jwts.builder().setSubject(user.getUsername()).setExpiration(new Date(System.currentTimeMillis() + 600000)).signWith(signKey).compact();
+            String jws = Jwts.builder().setSubject(user.getUsername()).setExpiration(new Date(System.currentTimeMillis() + 900000)).signWith(signKey).compact();
             currentToken = jws;
-            return new UserDto(user.getId(), user.getUsername(), user.getVorname(), user.getNachname(), user.getPassword(), jws);
+            return new DTO.UserDTO(user.getId(), user.getUsername(), user.getVorname(), user.getNachname(), user.getPassword(), jws);
         }
 
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public Boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(signKey).build().parseClaimsJws(token);
         } catch (Exception e) {
@@ -143,34 +143,61 @@ public class DbService {
         return true;
     }
 
-    public SettingsDto refreshSettings(Integer userId) {
+    public DTO.SettingsDTO refreshSettings(Integer userId) {
 
         if (settingsRepository.existsByUser_Id(userId)) {
             Settings settings = settingsRepository.findByUser_Id(userId);
-            return new SettingsDto(settings.getCardViewMode(), settings.getTheme());
+            return new DTO.SettingsDTO(settings.getCardViewMode(), settings.getTheme());
         }
 
-        return new SettingsDto("LIST", "default");
+        return new DTO.SettingsDTO("LIST", "default");
 
     }
 
-    public void saveSettings(Integer userId, SettingsDto settingsDto) {
+    public void saveSettings(Integer userId, DTO.SettingsDTO settingsDTO) {
         Optional<User> user = userRepository.findById(userId);
 
         if (user.isPresent()) {
             log.info("Settings saved!");
-            settingsRepository.save(new Settings(user.get(), settingsDto.getCardViewMode(), settingsDto.getTheme()));
+            settingsRepository.save(new Settings(user.get(), settingsDTO.getCardViewMode(), settingsDTO.getTheme()));
         }
     }
 
-    public boolean changePassword(PasswordChange passwordChange) {
-        if (userRepository.existsByIdAndPassword(passwordChange.getId(), passwordChange.getOldPassword())) {
-            User user = userRepository.findByIdAndPassword(passwordChange.getId(), passwordChange.getOldPassword());
-            user.setPassword(passwordChange.getNewPassword());
-            userRepository.save(user);
-            return true;
+    public Boolean changeUserDetail(DTO.PasswordInfoDTO passwordInfoDTO) {
+        if (userRepository.existsById(passwordInfoDTO.getId()) && userRepository.existsByPassword(passwordInfoDTO.getOldPassword())) {
+            Optional<User> user = userRepository.findById(passwordInfoDTO.getId());
+            if (user.isPresent()) {
+                user.get().setPassword(passwordInfoDTO.getNewPassword());
+                userRepository.save(user.get());
+                return true;
+            }
         }
+        return false;
+    }
 
+    public Boolean changeUserDetail(DTO.UsernameInfoDTO usernameInfoDTO) {
+        if (userRepository.existsById(usernameInfoDTO.getId()) && !userRepository.existsByUsername(usernameInfoDTO.getUsername())) {
+            Optional<User> user = userRepository.findById(usernameInfoDTO.getId());
+            if (user.isPresent()) {
+                user.get().setUsername(usernameInfoDTO.getUsername());
+                userRepository.save(user.get());
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public Boolean changeUserDetail(DTO.EmailInfoDTO emailInfoDTO) {
+        if (userRepository.existsById(emailInfoDTO.getId()) && !userRepository.existsByEmail(emailInfoDTO.getEmail())) {
+            Optional<User> user = userRepository.findById(emailInfoDTO.getId());
+            if (user.isPresent()) {
+                user.get().setEmail(emailInfoDTO.getEmail());
+                userRepository.save(user.get());
+                return true;
+            }
+            return false;
+        }
         return false;
     }
 }
