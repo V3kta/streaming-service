@@ -1,6 +1,6 @@
-package de.streaming.service.Entity;
+package de.streaming.service.entity;
 
-import de.streaming.service.Model.UserSerieKey;
+import de.streaming.service.model.UserSerieKey;
 import lombok.Getter;
 
 import javax.persistence.*;

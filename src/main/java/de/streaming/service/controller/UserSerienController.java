@@ -1,10 +1,8 @@
-package de.streaming.service.Controller;
+package de.streaming.service.controller;
 
-import de.streaming.service.Entity.User;
-import de.streaming.service.Model.SerieDto;
-import de.streaming.service.Model.UserSerieDto;
-import de.streaming.service.Model.UserSerieIds;
-import de.streaming.service.Service.DbService;
+import de.streaming.service.dto.DTO;
+import de.streaming.service.entity.User;
+import de.streaming.service.service.DbService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +22,7 @@ public class UserSerienController {
     }
 
     @GetMapping(value = "/serie/refresh/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SerieDto>> refreshAS(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<DTO.SerieDTO>> refreshAS(@RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             return new ResponseEntity<>(dbService.refreshSerien(), HttpStatus.ACCEPTED);
         }
@@ -33,7 +31,7 @@ public class UserSerienController {
     }
 
     @GetMapping(value = "serie/user/refresh/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SerieDto>> refreshUS(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<DTO.SerieDTO>> refreshUS(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             return new ResponseEntity<>(dbService.refreshUserSerien(userId), HttpStatus.ACCEPTED);
         }
@@ -52,9 +50,9 @@ public class UserSerienController {
     }
 
     @PostMapping(value = "serie/user/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus saveUS(@RequestBody UserSerieDto userSerieDto, @RequestHeader("Authorization") String token) {
+    public HttpStatus saveUS(@RequestBody DTO.UserSerieDTO userSerieDTO, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            dbService.saveUserSerie(userSerieDto.getUserDto(), userSerieDto.getSerieDto());
+            dbService.saveUserSerie(userSerieDTO);
             return HttpStatus.ACCEPTED;
         }
         log.warn("Token ungültig - " + token);
@@ -62,9 +60,9 @@ public class UserSerienController {
     }
 
     @PostMapping(value = "serie/user/delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus deleteUS(@RequestBody UserSerieIds userSerieIds, @RequestHeader("Authorization") String token) {
+    public HttpStatus deleteUS(@RequestBody DTO.UserSerieIdsDTO userSerieIdsDTO, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            dbService.deleteUserSerie(userSerieIds.getUserId(), userSerieIds.getSerieId());
+            dbService.deleteUserSerie(userSerieIdsDTO.getUserId(), userSerieIdsDTO.getSerieId());
             return HttpStatus.ACCEPTED;
         }
         log.warn("Token ungültig - " + token);

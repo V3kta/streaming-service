@@ -1,8 +1,4 @@
-package de.streaming.service.Model;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+package de.streaming.service.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
