@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Comparator;
+
 public class DTO {
 
     @Getter
@@ -29,6 +31,19 @@ public class DTO {
         private String zgDatum;
         private Integer zgFolge;
         private Integer zgStaffel;
+
+        public static Comparator<SerieDTO> SerieNameAscComp = new Comparator<SerieDTO>() {
+
+            public int compare(SerieDTO s1, SerieDTO s2) {
+                String StudentName1 = s1.getName().toUpperCase();
+                String StudentName2 = s2.getName().toUpperCase();
+
+                //ascending order
+                return StudentName1.compareTo(StudentName2);
+
+                //descending order
+                //return StudentName2.compareTo(StudentName1);
+            }};
     }
 
     @Getter

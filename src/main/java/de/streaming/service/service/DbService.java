@@ -5,6 +5,7 @@ import de.streaming.service.entity.Serie;
 import de.streaming.service.entity.Settings;
 import de.streaming.service.entity.User;
 import de.streaming.service.entity.UserSerie;
+import de.streaming.service.model.Sorting;
 import de.streaming.service.model.UserSerieKey;
 import de.streaming.service.repository.SerieRepository;
 import de.streaming.service.repository.SettingsRepository;
@@ -54,13 +55,12 @@ public class DbService {
             DTO.SerieDTO serieDto = new DTO.SerieDTO(serie.getId(), serie.getName(), serie.getBeschreibung(), serie.getBildPfad(), null, 0, 0);
             serienList.add(serieDto);
         }
-        log.info("Refreshed Serien!");
+        log.info("Refreshing Serien");
         return serienList;
 
     }
 
-    public List<DTO.SerieDTO> getUserSerien(Integer userId) {
-
+    public List<DTO.SerieDTO> getUserSerien(Integer userId, String sorting) {
         List<DTO.SerieDTO> serienList = new ArrayList<>();
         List<UserSerie> userSerieList = userSerieRepository.findByUserId(userId);
 
@@ -68,6 +68,24 @@ public class DbService {
             DTO.SerieDTO serie = new DTO.SerieDTO(userSerie.getSerie().getId(), userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(), userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
             serienList.add(serie);
         }
+
+        switch (sorting) {
+            case "default":
+                serienList.sort();
+                break;
+            case "nameasc":
+                break;
+            case "namedesc":
+                break;
+            case "dateasc":
+                break;
+            case "datedesc":
+                break;
+            default:
+                break;
+        }
+
+
 
         log.info("Refreshed Userserien for User ID " + userId);
         return serienList;

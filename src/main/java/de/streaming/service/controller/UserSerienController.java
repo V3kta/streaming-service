@@ -24,7 +24,6 @@ public class UserSerienController {
     @GetMapping(value = "/serien", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DTO.SerieDTO>> getSerien(@RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            log.info("Refreshing Serien");
             return new ResponseEntity<>(dbService.getSerien(), HttpStatus.OK);
         }
         log.error("Token invalid - " + token);
@@ -32,10 +31,9 @@ public class UserSerienController {
     }
 
     @GetMapping(value = "user/{userId}/serien", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DTO.SerieDTO>> getUserSerien(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<DTO.SerieDTO>> getUserSerien(@PathVariable Integer userId, @RequestHeader("Authorization") String token, @RequestParam String sorting) {
         if (dbService.validateToken(token)) {
-            log.info("Refreshing Userserien for User ID " + userId);
-            return new ResponseEntity<>(dbService.getUserSerien(userId), HttpStatus.OK);
+            return new ResponseEntity<>(dbService.getUserSerien(userId, sorting), HttpStatus.OK);
         }
         log.error("Token invalid - " + token);
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);

@@ -14,6 +14,7 @@ public interface UserSerieRepository extends JpaRepository<UserSerie, Integer> {
     List<UserSerie> findBySerieId(Integer id);
 
     List<UserSerie> findByUserId(Integer id);
+    List<UserSerie> findByUser_IdOrderBySerieNameAsc(Integer id);
 
     void removeBySerieAndUser(Serie serie, User user);
 }
