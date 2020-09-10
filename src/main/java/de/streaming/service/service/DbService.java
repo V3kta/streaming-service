@@ -47,7 +47,7 @@ public class DbService {
         this.settingsRepository = settingsRepository;
     }
 
-    public List<DTO.SerieDTO> refreshSerien() {
+    public List<DTO.SerieDTO> getSerien() {
         List<Serie> serienDb = serieRepository.findAll();
         List<DTO.SerieDTO> serienList = new ArrayList<>();
         for (Serie serie : serienDb) {
@@ -59,7 +59,7 @@ public class DbService {
 
     }
 
-    public List<DTO.SerieDTO> refreshUserSerien(Integer userId) {
+    public List<DTO.SerieDTO> getUserSerien(Integer userId) {
 
         List<DTO.SerieDTO> serienList = new ArrayList<>();
         List<UserSerie> userSerieList = userSerieRepository.findByUserId(userId);
@@ -69,38 +69,39 @@ public class DbService {
             serienList.add(serie);
         }
 
-        log.info("Refreshed Userserien for User ID: " + userId);
+        log.info("Refreshed Userserien for User ID " + userId);
         return serienList;
     }
 
-    public List<User> refreshSameViewers(Integer serieId) {
-        List<User> userList = new ArrayList<>();
+    public List<DTO.UserDTO> getViewers(Integer serieId) {
+        List<DTO.UserDTO> userList = new ArrayList<>();
         List<UserSerie> userSerieList = userSerieRepository.findBySerieId(serieId);
         for (UserSerie userSerie : userSerieList) {
-            userList.add(userSerie.getUser());
+            User user = userSerie.getUser();
+            userList.add(new DTO.UserDTO(user.getId(), user.getEmail(), user.getUsername(), user.getVorname(), user.getNachname(), ""));
         }
 
-        log.info("Refreshed same Viewers for Serien ID: " + serieId);
+        log.info("Refreshing Viewers for Serien ID " + serieId);
         return userList;
     }
 
-    public void saveUserSerie(DTO.UserSerieDTO userSerieDTO) {
+    public void saveUserSerie(Integer userId, DTO.SerieDTO serieDTO) {
 
-        Optional<User> user = userRepository.findById(userSerieDTO.getUserDTO().getId());
-        Optional<Serie> serie = serieRepository.findById(userSerieDTO.getSerieDTO().getId());
-        UserSerieKey userSerieKey = new UserSerieKey(userSerieDTO.getUserDTO().getId(), userSerieDTO.getSerieDTO().getId());
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Serie> serie = serieRepository.findById(serieDTO.getId());
+        UserSerieKey userSerieKey = new UserSerieKey(userId, serieDTO.getId());
 
         if (user.isPresent() && serie.isPresent()) {
             UserSerie userSerie = new UserSerie(userSerieKey, user.get(), serie.get(),
-                    userSerieDTO.getSerieDTO().getZgDatum(),
-                    userSerieDTO.getSerieDTO().getZgFolge(),
-                    userSerieDTO.getSerieDTO().getZgStaffel());
+                    serieDTO.getZgDatum(),
+                    serieDTO.getZgFolge(),
+                    serieDTO.getZgStaffel());
             userSerieRepository.save(userSerie);
-            log.info("Saved Userserie " + userSerie.getSerie().getName() + " to " + userSerie.getUser().getUsername());
+            log.info("Saving Userserie " + userSerie.getSerie().getName() + " to User " + userSerie.getUser().getUsername());
             return;
         }
 
-        log.error("User oder Serie nicht vorhanden!");
+        log.error("User or Serie not found!");
 
     }
 
@@ -111,7 +112,7 @@ public class DbService {
 
         if (serie.isPresent() && user.isPresent()) {
             userSerieRepository.removeBySerieAndUser(serie.get(), user.get());
-            log.info("Deleted Userserie " + serie.get().getName() + " from User ID: " + user.get().getId());
+            log.info("Deleting Userserie " + serie.get().getName() + " from User ID " + user.get().getId());
         }
     }
 

@@ -21,52 +21,54 @@ public class UserSerienController {
         this.dbService = dbService;
     }
 
-    @GetMapping(value = "/serie/refresh/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DTO.SerieDTO>> refreshAS(@RequestHeader("Authorization") String token) {
+    @GetMapping(value = "/serien", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DTO.SerieDTO>> getSerien(@RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            return new ResponseEntity<>(dbService.refreshSerien(), HttpStatus.ACCEPTED);
+            log.info("Refreshing Serien");
+            return new ResponseEntity<>(dbService.getSerien(), HttpStatus.OK);
         }
-        log.warn("Token ungültig - " + token);
-        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        log.error("Token invalid - " + token);
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping(value = "serie/user/refresh/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DTO.SerieDTO>> refreshUS(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
+    @GetMapping(value = "user/{userId}/serien", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DTO.SerieDTO>> getUserSerien(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            return new ResponseEntity<>(dbService.refreshUserSerien(userId), HttpStatus.ACCEPTED);
+            log.info("Refreshing Userserien for User ID " + userId);
+            return new ResponseEntity<>(dbService.getUserSerien(userId), HttpStatus.OK);
         }
-        log.warn("Token ungültig - " + token);
-        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        log.error("Token invalid - " + token);
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping(value = "user/serie/refresh/same/{serieId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> refreshSV(@PathVariable Integer serieId, @RequestHeader("Authorization") String token) {
+    @GetMapping(value = "serien/{serieId}/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DTO.UserDTO>> getViewers(@PathVariable Integer serieId, @RequestHeader("Authorization") String token) {
 
         if (dbService.validateToken(token)) {
-            return new ResponseEntity<>(dbService.refreshSameViewers(serieId), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(dbService.getViewers(serieId), HttpStatus.OK);
         }
-        log.warn("Token ungültig - " + token);
-        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        log.warn("Token invalid - " + token);
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
-    @PostMapping(value = "serie/user/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus saveUS(@RequestBody DTO.UserSerieDTO userSerieDTO, @RequestHeader("Authorization") String token) {
+    @PostMapping(value = "user/{userId}/serien", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus saveUserSerie(@RequestBody DTO.SerieDTO serieDTO, @PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            dbService.saveUserSerie(userSerieDTO);
-            return HttpStatus.ACCEPTED;
+            dbService.saveUserSerie(userId, serieDTO);
+            return HttpStatus.OK;
         }
-        log.warn("Token ungültig - " + token);
-        return HttpStatus.UNAUTHORIZED;
+        log.warn("Token invalid - " + token);
+        return HttpStatus.FORBIDDEN;
     }
 
-    @PostMapping(value = "serie/user/delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus deleteUS(@RequestBody DTO.UserSerieIdsDTO userSerieIdsDTO, @RequestHeader("Authorization") String token) {
+    @DeleteMapping(value = "user/{userId}/serien/{serieId}")
+    public HttpStatus deleteUserSerie(@PathVariable Integer userId, @PathVariable Integer serieId, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
-            dbService.deleteUserSerie(userSerieIdsDTO.getUserId(), userSerieIdsDTO.getSerieId());
-            return HttpStatus.ACCEPTED;
+            dbService.deleteUserSerie(userId, serieId);
+            return HttpStatus.OK;
         }
-        log.warn("Token ungültig - " + token);
-        return HttpStatus.UNAUTHORIZED;
+        log.warn("Token invalid - " + token);
+        return HttpStatus.FORBIDDEN;
     }
 
 
