@@ -69,8 +69,6 @@ public class DbService {
         }
 
         switch (sorting) {
-            case "default":
-                return serienList;
             case "nameasc":
                 serienList.sort(DTO.SerieDTO.SerieNameAscComp);
                 return serienList;
@@ -86,8 +84,6 @@ public class DbService {
             default:
                 break;
         }
-
-
 
         log.info("Refreshed Userserien for User ID " + userId);
         return serienList;
@@ -148,7 +144,7 @@ public class DbService {
         if (user != null) {
             String jws = Jwts.builder().setSubject(user.getUsername()).setExpiration(new Date(System.currentTimeMillis() + 900000)).signWith(signKey).compact();
             currentToken = jws;
-            return new DTO.UserDTO(user.getId(), user.getUsername(), user.getVorname(), user.getNachname(), user.getPassword(), jws);
+            return new DTO.UserDTO(user.getId(), user.getEmail(), user.getUsername(), user.getVorname(), user.getNachname(), jws);
         }
 
         return null;
