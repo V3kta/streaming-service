@@ -54,19 +54,35 @@ public class DbService {
             DTO.SerieDTO serieDto = new DTO.SerieDTO(serie.getId(), serie.getName(), serie.getBeschreibung(), serie.getBildPfad(), null, 0, 0);
             serienList.add(serieDto);
         }
-        log.info("Refreshed Serien!");
+        log.info("Refreshing Serien");
         return serienList;
 
     }
 
-    public List<DTO.SerieDTO> getUserSerien(Integer userId) {
-
+    public List<DTO.SerieDTO> getUserSerien(Integer userId, String sorting) {
         List<DTO.SerieDTO> serienList = new ArrayList<>();
         List<UserSerie> userSerieList = userSerieRepository.findByUserId(userId);
 
         for (UserSerie userSerie : userSerieList) {
             DTO.SerieDTO serie = new DTO.SerieDTO(userSerie.getSerie().getId(), userSerie.getSerie().getName(), userSerie.getSerie().getBeschreibung(), userSerie.getSerie().getBildPfad(), userSerie.getZgDatum(), userSerie.getZgFolge(), userSerie.getZgStaffel());
             serienList.add(serie);
+        }
+
+        switch (sorting) {
+            case "nameasc":
+                serienList.sort(DTO.SerieDTO.SerieNameAscComp);
+                return serienList;
+            case "namedesc":
+                serienList.sort(DTO.SerieDTO.SerieNameDescComp);
+                return serienList;
+            case "dateasc":
+                serienList.sort(DTO.SerieDTO.SerieDateAscComp);
+                return serienList;
+            case "datedesc":
+                serienList.sort(DTO.SerieDTO.SerieDateDescComp);
+                return serienList;
+            default:
+                break;
         }
 
         log.info("Refreshed Userserien for User ID " + userId);
@@ -128,7 +144,7 @@ public class DbService {
         if (user != null) {
             String jws = Jwts.builder().setSubject(user.getUsername()).setExpiration(new Date(System.currentTimeMillis() + 900000)).signWith(signKey).compact();
             currentToken = jws;
-            return new DTO.UserDTO(user.getId(), user.getUsername(), user.getVorname(), user.getNachname(), user.getPassword(), jws);
+            return new DTO.UserDTO(user.getId(), user.getEmail(), user.getUsername(), user.getVorname(), user.getNachname(), jws);
         }
 
         return null;

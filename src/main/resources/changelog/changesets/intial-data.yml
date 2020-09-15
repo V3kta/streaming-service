@@ -11,4 +11,4 @@ databaseChangeLog:
         - sql:
             sql: insert into user (id, email, nachname, password, username, vorname) values (1, "mylittlepony.profi@69.de", "Heller", "1234", "Comrade Elmo", "Leon"),(2, "luca.rasche@outlook.com", "Rasche", "1234", "V3kta", "Luca"),(3, "gernhardt.reinholzen@gmx.de", "Reinholzen", "1234", "Shrek", "Gernhardt");
         - sql:
-            sql: insert into user_serie_data (serie_id, user_id, zg_datum, zg_folge, zg_staffel) values (1, 2, "09.09.1999", 1, 1),(7, 1, "20.05.2001", 1, 7),(11, 1, "20.12.2019", 2, 2),(11, 3, "05.03.2020", 1, 4),(18, 3, "21.02.2018", 3, 12),(29, 2, "15.08.2019", 4, 2);
+            sql: insert into user_serie_data (serie_id, user_id, zg_datum, zg_folge, zg_staffel) values (1, 2, "1999-09-09", 1, 1),(7, 1, "2001-05-20", 1, 7),(11, 1, "2019-12-20", 2, 2),(11, 3, "2020-03-05", 1, 4),(18, 3, "2018-02-21", 3, 12),(29, 2, "2019-08-15", 4, 2);
