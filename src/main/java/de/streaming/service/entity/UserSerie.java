@@ -4,6 +4,7 @@ import de.streaming.service.model.UserSerieKey;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "user_serie_data")
@@ -22,7 +23,7 @@ public class UserSerie {
         zgStaffel = 0;
     }
 
-    public UserSerie(UserSerieKey userSerieKey, User user, Serie serie, String datum, Integer folge, Integer staffel) {
+    public UserSerie(UserSerieKey userSerieKey, User user, Serie serie, LocalDate datum, Integer folge, Integer staffel) {
         id = userSerieKey;
         this.user = user;
         this.serie = serie;
@@ -45,7 +46,7 @@ public class UserSerie {
     Serie serie;
 
     // Zuletzt gesehen am
-    private String zgDatum;
+    private LocalDate zgDatum;
 
     // Zuletzt gesehene Folge
     private Integer zgFolge;

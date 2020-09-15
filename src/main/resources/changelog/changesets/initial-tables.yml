@@ -77,7 +77,7 @@ databaseChangeLog:
                     references: serien(id)
               - column:
                   name: zg_datum
-                  type: varchar(255)
+                  type: date
               - column:
                   name: zg_folge
                   type: int

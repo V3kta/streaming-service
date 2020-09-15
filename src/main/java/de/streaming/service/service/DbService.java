@@ -5,7 +5,6 @@ import de.streaming.service.entity.Serie;
 import de.streaming.service.entity.Settings;
 import de.streaming.service.entity.User;
 import de.streaming.service.entity.UserSerie;
-import de.streaming.service.model.Sorting;
 import de.streaming.service.model.UserSerieKey;
 import de.streaming.service.repository.SerieRepository;
 import de.streaming.service.repository.SettingsRepository;
@@ -71,16 +70,19 @@ public class DbService {
 
         switch (sorting) {
             case "default":
-                serienList.sort();
-                break;
+                return serienList;
             case "nameasc":
-                break;
+                serienList.sort(DTO.SerieDTO.SerieNameAscComp);
+                return serienList;
             case "namedesc":
-                break;
+                serienList.sort(DTO.SerieDTO.SerieNameDescComp);
+                return serienList;
             case "dateasc":
-                break;
+                serienList.sort(DTO.SerieDTO.SerieDateAscComp);
+                return serienList;
             case "datedesc":
-                break;
+                serienList.sort(DTO.SerieDTO.SerieDateDescComp);
+                return serienList;
             default:
                 break;
         }
