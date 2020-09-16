@@ -34,7 +34,7 @@ public class SettingsController {
         return HttpStatus.UNAUTHORIZED;
     }
 
-    @PostMapping(value = "/user/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus changePassword(@RequestBody DTO.PasswordInfoDTO passwordInfoDTO, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             if (dbService.changeUserDetail(passwordInfoDTO)) {
@@ -45,7 +45,7 @@ public class SettingsController {
         return HttpStatus.UNAUTHORIZED;
     }
 
-    @PostMapping(value = "/user/changeUsername", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user/username", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus changeUsername(@RequestBody DTO.UsernameInfoDTO usernameInfoDTO, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             if (dbService.changeUserDetail(usernameInfoDTO)) {
@@ -56,7 +56,7 @@ public class SettingsController {
         return HttpStatus.UNAUTHORIZED;
     }
 
-    @PostMapping(value = "/user/changeEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user/email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus changeEmail(@RequestBody DTO.EmailInfoDTO emailInfoDTO, @RequestHeader("Authorization") String token) {
         if (dbService.validateToken(token)) {
             if (dbService.changeUserDetail(emailInfoDTO)) {

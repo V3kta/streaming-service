@@ -41,7 +41,8 @@ public class DTO {
 
                 return serieName1.compareTo(serieName2);
 
-            }};
+            }
+        };
 
         public static Comparator<SerieDTO> SerieNameDescComp = new Comparator<SerieDTO>() {
 
@@ -51,7 +52,8 @@ public class DTO {
 
                 return serieName2.compareTo(serieName1);
 
-            }};
+            }
+        };
 
         public static Comparator<SerieDTO> SerieDateAscComp = new Comparator<SerieDTO>() {
 
@@ -61,7 +63,8 @@ public class DTO {
 
                 return serieDate1.compareTo(serieDate2);
 
-            }};
+            }
+        };
 
         public static Comparator<SerieDTO> SerieDateDescComp = new Comparator<SerieDTO>() {
 
@@ -71,7 +74,8 @@ public class DTO {
 
                 return serieDate2.compareTo(serieDate1);
 
-            }};
+            }
+        };
     }
 
     @Getter
@@ -140,8 +144,6 @@ public class DTO {
         private Integer userId;
         private Integer serieId;
     }
-
-
 
 
 }
